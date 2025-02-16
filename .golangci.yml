@@ -153,7 +153,15 @@ issues:
         - dupl
         - mnd
         - lll
+        - goimports
+    - path: pkg/rand/string.go
+      linters:
+        - gosec
+      text: "G115: integer overflow conversion uint64 -> int"
 
+    - path: internal/http/auth/auth.go
+      linters:
+        - gofmt
     # Deprecated linter options.
     - path: pkg/golinters/errcheck/errcheck.go
       linters: [staticcheck]

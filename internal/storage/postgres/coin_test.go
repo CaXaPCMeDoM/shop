@@ -6,6 +6,8 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
 	"avito-tech-winter-2025/internal/storage"
 	"avito-tech-winter-2025/internal/storage/postgres"
 
@@ -71,8 +73,8 @@ func TestTransferCoins_RecipientNotFound(t *testing.T) {
 	mock.ExpectRollback()
 
 	err = repo.TransferCoins(context.Background(), 1, "non_existent", 100)
-	assert.ErrorIs(t, err, storage.ErrUserNotFound)
-	assert.NoError(t, mock.ExpectationsWereMet())
+	require.ErrorIs(t, err, storage.ErrUserNotFound)
+	require.NoError(t, mock.ExpectationsWereMet())
 }
 
 func TestTransferCoins_InsufficientFunds(t *testing.T) {
@@ -99,8 +101,8 @@ func TestTransferCoins_InsufficientFunds(t *testing.T) {
 	mock.ExpectRollback()
 
 	err = repo.TransferCoins(context.Background(), 1, "recipient", 100)
-	assert.ErrorIs(t, err, storage.ErrInsufficientFunds)
-	assert.NoError(t, mock.ExpectationsWereMet())
+	require.ErrorIs(t, err, storage.ErrInsufficientFunds)
+	require.NoError(t, mock.ExpectationsWereMet())
 }
 
 func TestTransferCoins_TransactionCommitError(t *testing.T) {
@@ -132,6 +134,6 @@ func TestTransferCoins_TransactionCommitError(t *testing.T) {
 	mock.ExpectCommit().WillReturnError(errors.New("commit error"))
 
 	err = repo.TransferCoins(context.Background(), 1, "recipient", 100)
-	assert.ErrorContains(t, err, "commit error")
+	require.ErrorContains(t, err, "commit error")
 	assert.NoError(t, mock.ExpectationsWereMet())
 }

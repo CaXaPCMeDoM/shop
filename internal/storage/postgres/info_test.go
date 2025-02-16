@@ -7,6 +7,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/require"
+
 	"avito-tech-winter-2025/internal/storage"
 	"avito-tech-winter-2025/internal/storage/postgres"
 
@@ -75,9 +77,9 @@ func TestGetUserInfo_Success(t *testing.T) {
 
 	result, err := repo.GetUserInfo(context.Background(), userID)
 
-	assert.NoError(t, err)
-	assert.Equal(t, expected, result)
-	assert.NoError(t, mock.ExpectationsWereMet())
+	require.NoError(t, err)
+	require.Equal(t, expected, result)
+	require.NoError(t, mock.ExpectationsWereMet())
 }
 
 func TestGetUserInfo_UserNotFound(t *testing.T) {
@@ -102,8 +104,8 @@ func TestGetUserInfo_UserNotFound(t *testing.T) {
 	result, err := repo.GetUserInfo(context.Background(), userID)
 
 	assert.Nil(t, result)
-	assert.ErrorIs(t, err, sql.ErrNoRows)
-	assert.NoError(t, mock.ExpectationsWereMet())
+	require.ErrorIs(t, err, sql.ErrNoRows)
+	require.NoError(t, mock.ExpectationsWereMet())
 }
 
 func TestGetUserInfo_QueryError(t *testing.T) {
@@ -128,8 +130,8 @@ func TestGetUserInfo_QueryError(t *testing.T) {
 	result, err := repo.GetUserInfo(context.Background(), userID)
 
 	assert.Nil(t, result)
-	assert.ErrorIs(t, err, sql.ErrConnDone)
-	assert.NoError(t, mock.ExpectationsWereMet())
+	require.ErrorIs(t, err, sql.ErrConnDone)
+	require.NoError(t, mock.ExpectationsWereMet())
 }
 
 func TestGetUserInfo_RowsCloseError(t *testing.T) {
@@ -155,6 +157,6 @@ func TestGetUserInfo_RowsCloseError(t *testing.T) {
 
 	_, err = repo.GetUserInfo(context.Background(), userID)
 
-	assert.ErrorContains(t, err, "close error")
-	assert.NoError(t, mock.ExpectationsWereMet())
+	require.ErrorContains(t, err, "close error")
+	require.NoError(t, mock.ExpectationsWereMet())
 }

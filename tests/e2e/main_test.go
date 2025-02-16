@@ -7,6 +7,7 @@ import (
 	"avito-tech-winter-2025/internal/storage/postgres"
 	"avito-tech-winter-2025/pkg/hash"
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -116,18 +117,29 @@ func TestAPISuite(t *testing.T) {
 	suite.Run(t, new(APITestSuite))
 }
 
-func (s *APITestSuite) createUser(username, password string) *TestUser {
-	reqBody := fmt.Sprintf(`{"username": "%q", "password": "%q"}`, username, password)
+func (s *APITestSuite) createUser(username string) *TestUser {
+	reqBody, err := json.Marshal(map[string]string{
+		"username": username,
+		"password": "pass",
+	})
+	if err != nil {
+		return nil
+	}
+
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("POST", "/api/auth", bytes.NewBufferString(reqBody))
+	req, _ := http.NewRequestWithContext(
+		context.Background(),
+		"POST",
+		"/api/auth",
+		bytes.NewBuffer(reqBody),
+	)
 	req.Header.Set("Content-Type", "application/json")
 	s.server.ServeHTTP(w, req)
 
 	var resp struct {
 		Token string `json:"token"`
 	}
-	err := json.Unmarshal(w.Body.Bytes(), &resp)
-	if err != nil {
+	if err := json.Unmarshal(w.Body.Bytes(), &resp); err != nil {
 		return nil
 	}
 

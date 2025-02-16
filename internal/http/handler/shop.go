@@ -3,8 +3,9 @@ package handler
 import (
 	"avito-tech-winter-2025/internal/storage"
 	"errors"
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 func (h *Handler) BuyItem(c *gin.Context) {

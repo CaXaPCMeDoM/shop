@@ -5,9 +5,10 @@ import (
 	"avito-tech-winter-2025/internal/http/auth"
 	"avito-tech-winter-2025/internal/storage"
 	"avito-tech-winter-2025/pkg/hash"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
-	"net/http"
 )
 
 type AuthHandler struct {

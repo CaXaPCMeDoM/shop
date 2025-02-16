@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"github.com/stretchr/testify/require"
 	"testing"
 
 	"avito-tech-winter-2025/internal/storage"
@@ -21,7 +22,7 @@ func TestBuyItem_Success(t *testing.T) {
 	defer func(db *sql.DB) {
 		err = db.Close()
 		if err != nil {
-
+			return
 		}
 	}(db)
 
@@ -55,7 +56,7 @@ func TestBuyItem_InsufficientFunds(t *testing.T) {
 	defer func(db *sql.DB) {
 		err = db.Close()
 		if err != nil {
-
+			return
 		}
 	}(db)
 
@@ -71,8 +72,8 @@ func TestBuyItem_InsufficientFunds(t *testing.T) {
 	mock.ExpectRollback()
 
 	err = repo.BuyItem(context.Background(), 1, "t-shirt")
-	assert.ErrorIs(t, err, storage.ErrInsufficientFunds)
-	assert.NoError(t, mock.ExpectationsWereMet())
+	require.ErrorIs(t, err, storage.ErrInsufficientFunds)
+	require.NoError(t, mock.ExpectationsWereMet())
 }
 
 func TestBuyItem_InventoryUpdateError(t *testing.T) {
@@ -83,7 +84,7 @@ func TestBuyItem_InventoryUpdateError(t *testing.T) {
 	defer func(db *sql.DB) {
 		err = db.Close()
 		if err != nil {
-
+			return
 		}
 	}(db)
 
@@ -102,8 +103,8 @@ func TestBuyItem_InventoryUpdateError(t *testing.T) {
 	mock.ExpectRollback()
 
 	err = repo.BuyItem(context.Background(), 1, "t-shirt")
-	assert.ErrorContains(t, err, "inventory error")
-	assert.NoError(t, mock.ExpectationsWereMet())
+	require.ErrorContains(t, err, "inventory error")
+	require.NoError(t, mock.ExpectationsWereMet())
 }
 
 func TestBuyItem_BeginTxError(t *testing.T) {
@@ -114,7 +115,7 @@ func TestBuyItem_BeginTxError(t *testing.T) {
 	defer func(db *sql.DB) {
 		err = db.Close()
 		if err != nil {
-
+			return
 		}
 	}(db)
 
@@ -123,6 +124,6 @@ func TestBuyItem_BeginTxError(t *testing.T) {
 	mock.ExpectBegin().WillReturnError(errors.New("tx error"))
 
 	err = repo.BuyItem(context.Background(), 1, "t-shirt")
-	assert.ErrorContains(t, err, "tx error")
-	assert.NoError(t, mock.ExpectationsWereMet())
+	require.ErrorContains(t, err, "tx error")
+	require.NoError(t, mock.ExpectationsWereMet())
 }

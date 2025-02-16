@@ -6,29 +6,26 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func (s *APITestSuite) TestGetInfo() {
-	user := s.createUser("info_user", "pass")
+	user := s.createUser("info_user")
 
-	s.T().Run("Get initial info", func(t *testing.T) {
+	s.Run("Get initial info", func() {
 		w := httptest.NewRecorder()
 		req, _ := http.NewRequestWithContext(context.Background(), "GET", "/api/info", http.NoBody)
 		req.Header.Set("Authorization", "Bearer "+user.Token)
 		s.server.ServeHTTP(w, req)
 
-		assert.Equal(t, http.StatusOK, w.Code)
+		s.Require().Equal(http.StatusOK, w.Code)
 
 		var info storage.UserInfo
 		err := json.Unmarshal(w.Body.Bytes(), &info)
-		assert.NoError(t, err)
+		s.Require().NoError(err)
 
-		assert.Equal(t, 1000, info.Coins)
-		assert.Empty(t, info.Inventory)
-		assert.Empty(t, info.CoinHistory.Received)
-		assert.Empty(t, info.CoinHistory.Sent)
+		s.Require().Equal(1000, info.Coins)
+		s.Require().Empty(info.Inventory)
+		s.Require().Empty(info.CoinHistory.Received)
+		s.Require().Empty(info.CoinHistory.Sent)
 	})
 }
