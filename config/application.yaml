@@ -1,0 +1,18 @@
+jwt:
+  token_ttl: 2h
+
+storage:
+  postgres:
+    pool:
+      max_open_conns: 2000
+      max_idle_conns: 1000
+      conn_max_idle_time: "10s"
+      conn_max_lifetime: "30s"
+
+http:
+  port: 8080
+  timeouts:
+    read_header: 5s
+    read: 10s
+    write: 10s
+    idle: 30s
