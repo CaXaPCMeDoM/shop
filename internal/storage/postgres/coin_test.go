@@ -18,7 +18,12 @@ func TestTransferCoins_Success(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error creating mock: %v", err)
 	}
-	defer db.Close()
+	defer func(db *sql.DB) {
+		err = db.Close()
+		if err != nil {
+			return
+		}
+	}(db)
 
 	repo := postgres.Storage{DB: db}
 	fromUserID := 1
@@ -51,7 +56,12 @@ func TestTransferCoins_RecipientNotFound(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer db.Close()
+	defer func(db *sql.DB) {
+		err = db.Close()
+		if err != nil {
+			return
+		}
+	}(db)
 
 	repo := postgres.Storage{DB: db}
 	mock.ExpectBegin()
@@ -70,7 +80,12 @@ func TestTransferCoins_InsufficientFunds(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer db.Close()
+	defer func(db *sql.DB) {
+		err = db.Close()
+		if err != nil {
+			return
+		}
+	}(db)
 
 	repo := postgres.Storage{DB: db}
 	mock.ExpectBegin()
@@ -93,7 +108,12 @@ func TestTransferCoins_TransactionCommitError(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer db.Close()
+	defer func(db *sql.DB) {
+		err = db.Close()
+		if err != nil {
+			return
+		}
+	}(db)
 
 	repo := postgres.Storage{DB: db}
 	mock.ExpectBegin()
